@@ -1,0 +1,8 @@
+# sensitive fields not tracked
+[user]
+    name = My Name
+    email = personal@personal.email
+
+# rewrite HTTPS to be SSH
+[url "git@github.com:"]
+  insteadOf = https://github.com/
