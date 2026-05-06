@@ -1,0 +1,26 @@
+# =============================================================================
+# .gitignore — dotfiles repo
+# Files that must NEVER be committed (secrets, local overrides)
+# =============================================================================
+
+# Local machine-specific overrides (not portable)
+*.local
+
+# Secrets
+.env
+.env.*
+secrets/
+credentials/
+
+# Ansible vault files (encrypt with ansible-vault if you need them)
+*.vault
+vault_pass*
+
+# Editor noise
+*.swp *.swo
+.DS_Store
+__pycache__/
+*.pyc
+
+# Ansible retry files
+*.retry
