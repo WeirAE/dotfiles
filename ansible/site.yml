@@ -1,0 +1,31 @@
+---
+# =============================================================================
+# site.yml — Dotfiles provisioning entry point
+#
+# Usage:
+#   Personal Ubuntu machine:
+#     ansible-playbook -i inventory/hosts.yml site.yml --limit personal
+#
+#   HPC Rocky cluster (requires SSH key auth; no sudo assumed):
+#     ansible-playbook -i inventory/hosts.yml site.yml --limit hpc
+#
+#   Both profiles on localhost:
+#     ansible-playbook -i inventory/hosts.yml site.yml --limit local
+#
+# Tags:
+#   --tags shell      shell dotfiles only
+#   --tags editor     editor config only
+#   --tags git        git config only
+#   --tags packages   package installation only (skipped on HPC by default)
+# =============================================================================
+- name: "Personal Ubuntu setup"
+  hosts: personal
+  gather_facts: true
+  roles:
+    - role: personal
+
+- name: "HPC setup"
+  hosts: hpc
+  gather_facts: true
+  roles:
+    - role: hpc
