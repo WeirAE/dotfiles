@@ -1,0 +1,22 @@
+# sensitive fields not tracked
+[user]
+    name = My Name
+    email = personal@personal.email
+
+# rewrite HTTPS to be SSH
+[url "git@github.com:"]
+  insteadOf = https://github.com/
+
+# ---------------------------------------------------------------------------
+# HPC-specific: large repo performance
+# ---------------------------------------------------------------------------
+[pack]
+    threads     = 0       # auto-detect CPU count
+    windowMemory = 256m
+
+[core]
+    preloadindex = true
+    fscache      = true
+
+[gc]
+    auto = 256
