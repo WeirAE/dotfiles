@@ -1,0 +1,49 @@
+# =============================================================================
+# ~/.config/git/ignore — global gitignore (shared: personal + HPC)
+# =============================================================================
+
+# OS
+.DS_Store
+._*
+Thumbs.db
+desktop.ini
+
+# Editors
+*.swp *.swo *.swn
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+Session.vim
+.netrwhist
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+.venv/ venv/ env/ ENV/
+*.egg-info/
+dist/ build/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Fortran build artefacts
+*.mod
+*.o
+*.a
+*.so
+*.f90~
+
+# HPC job artefacts
+slurm-*.out
+*.e[0-9]*
+*.o[0-9]*
+core.*
+
+# Secrets
+.env .env.*
+*.local
+secrets/ credentials/
