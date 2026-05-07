@@ -1,0 +1,25 @@
+# ---------------------------------------------------------------------------
+# Paths (no sudo; everything under $HOME)
+# ---------------------------------------------------------------------------
+dotfiles_repo_dir: "{{ ansible_env.HOME }}/dotfiles"
+
+# ---------------------------------------------------------------------------
+# Shell
+# ---------------------------------------------------------------------------
+# On HPC, changing login shell requires sysadmin; we only configure bash.
+default_shell: /bin/bash
+
+# ---------------------------------------------------------------------------
+# Packages
+# On HPC we generally CANNOT use sudo or install system packages.
+# Set this to true only if you have sudo on the target machine.
+# ---------------------------------------------------------------------------
+hpc_allow_sudo: false
+
+dnf_packages:
+  - git
+  - vim
+  - tmux
+  - fzf
+  - python3
+  - make
