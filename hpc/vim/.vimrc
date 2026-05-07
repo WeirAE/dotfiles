@@ -15,7 +15,7 @@ set ruler
 set showmatch
 set wildmenu
 
-# fortran
+" fortran
 let fortran_free_source = 1
 let fortran_do_enddo     = 1
 let fortran_more_precise = 1
