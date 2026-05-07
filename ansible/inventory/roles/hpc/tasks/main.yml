@@ -1,0 +1,28 @@
+- name: "HPC | User-local directories"
+  import_tasks: dirs.yml
+  tags: [shell, dirs]
+
+- name: "HPC | System packages (sudo-gated)"
+  import_tasks: packages.yml
+  tags: [packages]
+  when: hpc_allow_sudo | bool
+
+- name: "HPC | User-space tools (no sudo)"
+  import_tasks: userspace_tools.yml
+  tags: [packages]
+
+- name: "HPC | SSH client config"
+  import_tasks: ssh.yml
+  tags: [ssh]
+
+- name: "HPC | Shell (bash)"
+  import_tasks: shell.yml
+  tags: [shell]
+
+- name: "HPC | Git"
+  import_tasks: git.yml
+  tags: [git]
+
+- name: "HPC | Vim"
+  import_tasks: vim.yml
+  tags: [editor]
