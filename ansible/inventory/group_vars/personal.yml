@@ -1,0 +1,52 @@
+# ---------------------------------------------------------------------------
+# Paths
+# ---------------------------------------------------------------------------
+dotfiles_repo_dir: "{{ ansible_env.HOME }}/dotfiles"
+xdg_config_home: "{{ ansible_env.HOME }}/.config"
+xdg_data_home: "{{ ansible_env.HOME }}/.local/share"
+xdg_cache_home: "{{ ansible_env.HOME }}/.cache"
+xdg_state_home: "{{ ansible_env.HOME }}/.local/state"
+
+# ---------------------------------------------------------------------------
+# Shell
+# ---------------------------------------------------------------------------
+default_shell: /usr/bin/zsh
+ohmyzsh_dir: "{{ xdg_data_home }}/oh-my-zsh"
+ohmyzsh_install_url: "https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh"
+
+zsh_plugins_dir: "{{ ohmyzsh_dir }}/custom/plugins"
+zsh_extra_plugins:
+  - name: zsh-autosuggestions
+    repo: "https://github.com/zsh-users/zsh-autosuggestions.git"
+  - name: zsh-syntax-highlighting
+    repo: "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+
+# ---------------------------------------------------------------------------
+# Packages (apt)
+# ---------------------------------------------------------------------------
+apt_packages:
+  - git
+  - curl
+  - wget
+  - zsh
+  - neovim
+  - fzf
+  - fd-find
+  - ripgrep
+  - bat
+  - tmux
+  - make
+  - build-essential
+  - python3
+  - python3-pip
+  - python3-venv
+  - nodejs           # required by some neovim LSP servers
+  - npm
+
+# ---------------------------------------------------------------------------
+# pip / uv tools (installed into ~/.local)
+# ---------------------------------------------------------------------------
+uv_install_url: "https://astral.sh/uv/install.sh"
+python_global_tools:
+  - ruff
+  - mypy
