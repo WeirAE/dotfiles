@@ -1,0 +1,32 @@
+- name: "Personal | XDG directories"
+  import_tasks: xdg.yml
+  tags: [shell, dirs]
+
+- name: "Personal | APT packages"
+  import_tasks: packages.yml
+  tags: [packages]
+  become: true
+
+- name: "Personal | uv (Python toolchain)"
+  import_tasks: uv.yml
+  tags: [packages, python]
+
+- name: "Personal | SSH client config"
+  import_tasks: ssh.yml
+  tags: [ssh]
+
+- name: "Personal | Shell (zsh + Oh My Zsh)"
+  import_tasks: shell.yml
+  tags: [shell]
+
+- name: "Personal | Git"
+  import_tasks: git.yml
+  tags: [git]
+
+- name: "Personal | Neovim / NvChad"
+  import_tasks: neovim.yml
+  tags: [editor]
+
+- name: "Personal | delta (git diff)"
+  import_tasks: delta.yml
+  tags: [packages, git]
