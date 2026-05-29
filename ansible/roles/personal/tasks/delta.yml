@@ -1,0 +1,25 @@
+---
+# roles/personal/tasks/delta.yml
+# Install git-delta .deb from GitHub releases.
+# Requires become: true (dpkg install).
+
+- name: "delta | Check if installed"
+  ansible.builtin.command:
+    argv: [delta, "--version"]
+  register: delta_check
+  changed_when: false
+  failed_when: false
+
+- name: "delta | Download .deb"
+  ansible.builtin.get_url:
+    url: "{{ delta_deb_url }}"
+    dest: "/tmp/git-delta.deb"
+    mode: "0644"
+  when: delta_check.rc != 0
+
+- name: "delta | Install .deb"
+  ansible.builtin.apt:
+    deb: /tmp/git-delta.deb
+    state: present
+  become: true
+  when: delta_check.rc != 0

@@ -1,0 +1,25 @@
+---
+# roles/hpc/tasks/git.yml
+
+- name: "Git | Deploy .gitconfig"
+  ansible.builtin.copy:
+    src: "{{ dotfiles_repo_dir }}/hpc/git/.gitconfig"
+    dest: "{{ ansible_env.HOME }}/.gitconfig"
+    backup: true
+    mode: "0644"
+
+- name: "Git | Deploy global ignore"
+  ansible.builtin.copy:
+    src: "{{ dotfiles_repo_dir }}/hpc/git/ignore"
+    dest: "{{ ansible_env.HOME }}/.config/git/ignore"
+    backup: true
+    mode: "0644"
+
+- name: "Git | Remind about .gitconfig.local"
+  ansible.builtin.debug:
+    msg: >
+      ACTION REQUIRED: Create ~/.gitconfig.local with:
+        [user]
+          name  = Your Name
+          email = you@institution.edu
+      This file is NOT tracked in the dotfiles repo.

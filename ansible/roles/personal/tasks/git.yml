@@ -1,0 +1,27 @@
+---
+# roles/personal/tasks/git.yml
+# Deploy personal git dotfiles.
+# ~/.gitconfig.local (name + email) is NOT managed here — fill in manually.
+
+- name: "Git | Deploy .gitconfig"
+  ansible.builtin.copy:
+    src: "{{ dotfiles_repo_dir }}/personal/git/.gitconfig"
+    dest: "{{ ansible_env.HOME }}/.gitconfig"
+    backup: true
+    mode: "0644"
+
+- name: "Git | Deploy global ignore"
+  ansible.builtin.copy:
+    src: "{{ dotfiles_repo_dir }}/personal/git/ignore"
+    dest: "{{ xdg_config_home }}/git/ignore"
+    backup: true
+    mode: "0644"
+
+- name: "Git | Remind about .gitconfig.local"
+  ansible.builtin.debug:
+    msg: >
+      ACTION REQUIRED: Create ~/.gitconfig.local with:
+        [user]
+          name  = Your Name
+          email = you@example.com
+      This file is NOT tracked in git.

@@ -1,0 +1,49 @@
+---
+# roles/personal/tasks/neovim.yml
+# Deploy Neovim config (NvChad + personal lua/ tree).
+# NvChad itself bootstraps on first nvim launch via init.lua.
+
+- name: "Neovim | Create config directory"
+  ansible.builtin.file:
+    path: "{{ xdg_config_home }}/nvim/lua/custom/configs"
+    state: directory
+    mode: "0755"
+
+- name: "Neovim | Deploy init.lua"
+  ansible.builtin.copy:
+    src: "{{ dotfiles_repo_dir }}/personal/nvim/init.lua"
+    dest: "{{ xdg_config_home }}/nvim/init.lua"
+    backup: true
+    mode: "0644"
+
+- name: "Neovim | Deploy custom lua files"
+  ansible.builtin.copy:
+    src: "{{ item.src }}"
+    dest: "{{ xdg_config_home }}/nvim/{{ item.dest }}"
+    backup: true
+    mode: "0644"
+  loop:
+    - { src: "{{ dotfiles_repo_dir }}/personal/nvim/lua/custom/chadrc.lua",
+        dest: "lua/custom/chadrc.lua" }
+    - { src: "{{ dotfiles_repo_dir }}/personal/nvim/lua/custom/plugins.lua",
+        dest: "lua/custom/plugins.lua" }
+    - { src: "{{ dotfiles_repo_dir }}/personal/nvim/lua/custom/mappings.lua",
+        dest: "lua/custom/mappings.lua" }
+    - { src: "{{ dotfiles_repo_dir }}/personal/nvim/lua/custom/configs/lspconfig.lua",
+        dest: "lua/custom/configs/lspconfig.lua" }
+    - { src: "{{ dotfiles_repo_dir }}/personal/nvim/lua/custom/configs/null-ls.lua",
+        dest: "lua/custom/configs/null-ls.lua" }
+
+- name: "Neovim | Bootstrap plugins headlessly (first run)"
+  ansible.builtin.command:
+    argv:
+      - nvim
+      - "--headless"
+      - "-c"
+      - "Lazy! sync"
+      - "-c"
+      - "qall"
+  register: nvim_lazy_sync
+  changed_when: true
+  failed_when: false    # non-zero exit on first boot is expected
+  timeout: 120

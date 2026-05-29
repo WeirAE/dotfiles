@@ -1,0 +1,21 @@
+---
+# roles/hpc/tasks/vim.yml
+
+- name: "Vim | Deploy .vimrc"
+  ansible.builtin.copy:
+    src: "{{ dotfiles_repo_dir }}/hpc/vim/.vimrc"
+    dest: "{{ ansible_env.HOME }}/.vimrc"
+    backup: true
+    mode: "0644"
+
+- name: "Vim | Create undo directory"
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.vim/undo"
+    state: directory
+    mode: "0700"
+
+- name: "Vim | Create spell directory"
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.vim/spell"
+    state: directory
+    mode: "0700"

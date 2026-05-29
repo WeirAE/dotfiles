@@ -1,0 +1,59 @@
+---
+# roles/hpc/tasks/ssh.yml
+# Deploy SSH client config and scaffold required directories/files.
+# Private keys are NEVER managed here — create them manually (see README).
+
+- name: "SSH | Create ~/.ssh directory (0700)"
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.ssh"
+    state: directory
+    mode: "0700"
+
+- name: "SSH | Create ControlMaster socket directory (0700)"
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.ssh/ctrl"
+    state: directory
+    mode: "0700"
+
+- name: "SSH | Deploy ~/.ssh/config"
+  ansible.builtin.copy:
+    src: "{{ dotfiles_repo_dir }}/hpc/ssh/config"
+    dest: "{{ ansible_env.HOME }}/.ssh/config"
+    backup: true
+    mode: "0600"
+
+- name: "SSH | Deploy config.local template"
+  ansible.builtin.copy:
+    src: "{{ dotfiles_repo_dir }}/hpc/ssh/config.local.template"
+    dest: "{{ ansible_env.HOME }}/.ssh/config.local.template"
+    mode: "0600"
+    force: false
+
+- name: "SSH | Check whether config.local exists"
+  ansible.builtin.stat:
+    path: "{{ ansible_env.HOME }}/.ssh/config.local"
+  register: ssh_config_local
+
+- name: "SSH | Create empty config.local if absent"
+  ansible.builtin.copy:
+    content: |
+      # Cluster/site-specific SSH overrides — see config.local.template for examples.
+      # This file is NOT tracked in git.
+    dest: "{{ ansible_env.HOME }}/.ssh/config.local"
+    mode: "0600"
+    force: false
+  when: not ssh_config_local.stat.exists
+
+- name: "SSH | Remind about key generation and cluster setup"
+  ansible.builtin.debug:
+    msg: |
+      ACTION REQUIRED — generate SSH keys if they don't exist:
+        ssh-keygen -t ed25519 -C "you@institution.edu" -f ~/.ssh/id_ed25519_hpc
+        ssh-keygen -t ed25519 -C "you@institution.edu" -f ~/.ssh/id_ed25519_github
+
+      Register id_ed25519_hpc.pub with your HPC centre's user portal.
+      Register id_ed25519_github.pub with GitHub.
+
+      Then fill in ~/.ssh/config.local with the real hostname for 'mycluster'
+      and any bastion/ProxyJump configuration your site requires.
+      (See ~/.ssh/config.local.template for examples.)

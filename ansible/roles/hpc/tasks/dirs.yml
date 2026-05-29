@@ -1,0 +1,15 @@
+---
+# roles/hpc/tasks/dirs.yml
+
+- name: "HPC dirs | Create user-local directories"
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0700"
+  loop:
+    - "{{ ansible_env.HOME }}/.local/bin"
+    - "{{ ansible_env.HOME }}/.local/share"
+    - "{{ ansible_env.HOME }}/.config/git"
+    - "{{ ansible_env.HOME }}/.vim/undo"
+    - "{{ ansible_env.HOME }}/.vim/spell"
+    - "{{ ansible_env.HOME }}/.local/src"     # source tarballs / builds

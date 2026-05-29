@@ -1,0 +1,33 @@
+---
+# roles/hpc/tasks/userspace_tools.yml
+# Install user-space tools to ~/.local/bin without requiring sudo.
+# Fetches static/musl-linked binaries from GitHub releases.
+
+- name: "Userspace | Check ripgrep"
+  ansible.builtin.stat:
+    path: "{{ ansible_env.HOME }}/.local/bin/rg"
+  register: rg_binary
+
+- name: "Userspace | Download ripgrep tarball"
+  ansible.builtin.get_url:
+    url: "{{ ripgrep_url }}"
+    dest: "/tmp/ripgrep.tar.gz"
+    mode: "0644"
+  when: not rg_binary.stat.exists
+
+- name: "Userspace | Extract ripgrep binary"
+  ansible.builtin.shell:
+    cmd: >
+      tar -xzf /tmp/ripgrep.tar.gz
+      --strip-components=1
+      --wildcards
+      '*/rg'
+      -C {{ ansible_env.HOME }}/.local/bin/
+    creates: "{{ ansible_env.HOME }}/.local/bin/rg"
+  when: not rg_binary.stat.exists
+
+- name: "Userspace | Ensure ~/.local/bin binaries are executable"
+  ansible.builtin.file:
+    path: "{{ ansible_env.HOME }}/.local/bin/rg"
+    mode: "0755"
+  when: not rg_binary.stat.exists

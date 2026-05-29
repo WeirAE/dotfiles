@@ -1,0 +1,9 @@
+---
+# roles/hpc/tasks/packages.yml
+# Only runs when hpc_allow_sudo: true (off by default).
+
+- name: "Packages | Install dnf packages"
+  ansible.builtin.dnf:
+    name: "{{ dnf_packages }}"
+    state: present
+  become: true

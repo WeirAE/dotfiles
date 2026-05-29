@@ -1,0 +1,21 @@
+---
+# roles/personal/tasks/packages.yml
+# Install system packages via apt (requires become: true).
+
+- name: "Packages | Update apt cache"
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: "Packages | Install apt packages"
+  ansible.builtin.apt:
+    name: "{{ apt_packages }}"
+    state: present
+
+- name: "Packages | Create fd symlink (Ubuntu names it fdfind)"
+  ansible.builtin.file:
+    src: /usr/bin/fdfind
+    dest: "{{ ansible_env.HOME }}/.local/bin/fd"
+    state: link
+  when: ansible_distribution == "Ubuntu"
+  # fd-find ships the binary as 'fdfind' to avoid a name conflict

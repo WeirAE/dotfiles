@@ -1,0 +1,55 @@
+---
+# roles/personal/tasks/shell.yml
+# Install Oh My Zsh, extra plugins, deploy zsh dotfiles, set default shell.
+
+- name: "Shell | Check if Oh My Zsh is installed"
+  ansible.builtin.stat:
+    path: "{{ ohmyzsh_dir }}"
+  register: omz_dir
+
+- name: "Shell | Download Oh My Zsh installer"
+  ansible.builtin.get_url:
+    url: "{{ ohmyzsh_install_url }}"
+    dest: /tmp/install-omz.sh
+    mode: "0700"
+  when: not omz_dir.stat.exists
+
+- name: "Shell | Run Oh My Zsh installer (unattended)"
+  ansible.builtin.command:
+    argv:
+      - /bin/sh
+      - /tmp/install-omz.sh
+      - "--unattended"
+    creates: "{{ ohmyzsh_dir }}"
+  environment:
+    ZSH: "{{ ohmyzsh_dir }}"
+  when: not omz_dir.stat.exists
+
+- name: "Shell | Install extra zsh plugins"
+  ansible.builtin.git:
+    repo: "{{ item.repo }}"
+    dest: "{{ zsh_plugins_dir }}/{{ item.name }}"
+    depth: 1
+    update: true
+  loop: "{{ zsh_extra_plugins }}"
+
+- name: "Shell | Deploy .zshrc"
+  ansible.builtin.copy:
+    src: "{{ dotfiles_repo_dir }}/personal/zsh/.zshrc"
+    dest: "{{ ansible_env.HOME }}/.zshrc"
+    backup: true
+    mode: "0644"
+
+- name: "Shell | Deploy .zprofile"
+  ansible.builtin.copy:
+    src: "{{ dotfiles_repo_dir }}/personal/zsh/.zprofile"
+    dest: "{{ ansible_env.HOME }}/.zprofile"
+    backup: true
+    mode: "0644"
+
+- name: "Shell | Set default shell to zsh"
+  ansible.builtin.user:
+    name: "{{ ansible_env.USER }}"
+    shell: "{{ default_shell }}"
+  become: true
+  # Requires sudo; skip on machines where this is managed externally

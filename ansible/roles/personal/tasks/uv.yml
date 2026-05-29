@@ -1,0 +1,27 @@
+---
+# roles/personal/tasks/uv.yml
+# Install uv (fast Python package/project manager) to ~/.local/bin.
+# Does NOT require sudo.
+
+- name: "uv | Check if already installed"
+  ansible.builtin.stat:
+    path: "{{ ansible_env.HOME }}/.local/bin/uv"
+  register: uv_binary
+
+- name: "uv | Install via official installer script"
+  ansible.builtin.shell:
+    cmd: "curl -LsSf {{ uv_install_url }} | sh"
+    creates: "{{ ansible_env.HOME }}/.local/bin/uv"
+  when: not uv_binary.stat.exists
+  # The installer writes to ~/.local/bin by default
+
+- name: "uv | Install global Python tools"
+  ansible.builtin.command:
+    argv:
+      - "{{ ansible_env.HOME }}/.local/bin/uv"
+      - "tool"
+      - "install"
+      - "{{ item }}"
+  loop: "{{ python_global_tools }}"
+  register: uv_tool_result
+  changed_when: "'already installed' not in uv_tool_result.stdout"
